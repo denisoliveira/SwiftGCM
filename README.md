@@ -10,10 +10,7 @@ This library implements Galois/Counter Mode for Swift.  It has no dependencies o
 - Support for 128, 120, 112, 104, 96, 64 and 32 bit authentication tag sizes (128 bits recommended).
 
 ## Installing
-To use SwiftGCM, simply drag `SwiftGCM.swift` into your project source files.  You will also need to include `Security.framework` in your code and add a bridging header to import CommonCrypto:
-```
-#import <CommonCrypto/CommonCrypto.h>
-```
+To use SwiftGCM, simply drag `SwiftGCM.swift` into your project source files.
 
 ## Basic Example
 ```swift
