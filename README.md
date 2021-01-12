@@ -1,6 +1,6 @@
 ![](icon.png)
 
-![Swift](https://github.com/denisoliveira/SwiftGCM/workflows/Swift/badge.svg)
+![Swift](https://github.com/denisoliveira/SwiftGCM/workflows/Swift/badge.svg?branch=master)
 # SwiftGCM
 This library implements Galois/Counter Mode for Swift.  It has no dependencies other than Apple's CommonCrypto (`CCCrypt`).  You can include SwiftGCM in your project by simply dragging and dropping `SwiftGCM.swift` into your project source files.
 
