@@ -135,37 +135,37 @@ public class SwiftGCM {
             throw SwiftGCMError.invalidDataSize
         }
         
-        var keyBuffer: [UInt8] = []
-        key.withUnsafeBytes {
-            keyBuffer.append(contentsOf: $0.bindMemory(to: UInt8.self))
-        }
-        let keyLength = key.count
+        var dataMutable: Data = data
+        var keyMutable: Data = key
         
-        var dataInBuffer: [UInt8] = []
-        data.withUnsafeBytes {
-            dataInBuffer.append(contentsOf: $0.bindMemory(to: UInt8.self))
-        }
-        let dataInLength = data.count
-        
-        var dataOutBuffer: [UInt8] = []
-        let dataOutAvailable = data.count
+        var dataOut: Data = Data(count: data.count)
         var dataOutMoved: size_t = 0
         
-        let status = CCCrypt(
-            CCOperation(kCCEncrypt),
-            CCAlgorithm(kCCAlgorithmAES),
-            CCOptions(kCCOptionECBMode),
-            &keyBuffer, keyLength,
-            nil,
-            &dataInBuffer, dataInLength,
-            &dataOutBuffer, dataOutAvailable, &dataOutMoved
-        )
+        let keyLength = key.count
+        let dataInLength = data.count
+        let dataOutAvailable = dataOut.count
+        
+        let status = dataOut.withUnsafeMutableBytes { dataOutRaw in
+            dataMutable.withUnsafeMutableBytes { dataInRaw in
+                keyMutable.withUnsafeMutableBytes{ keyRaw in
+                    CCCrypt(
+                        CCOperation(kCCEncrypt),
+                        CCAlgorithm(kCCAlgorithmAES),
+                        CCOptions(kCCOptionECBMode),
+                        keyRaw.baseAddress, keyLength,
+                        nil,
+                        dataInRaw.baseAddress, dataInLength,
+                        dataOutRaw.baseAddress, dataOutAvailable, &dataOutMoved
+                    )
+                }
+            }
+        }
         
         if status != kCCSuccess {
             throw SwiftGCMError.commonCryptoError(err: status)
         }
         
-        return Data(bytes: &dataOutBuffer, count: dataOutAvailable)
+        return dataOut
     }
     
     // Counter.
